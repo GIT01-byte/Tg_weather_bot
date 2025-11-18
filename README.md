@@ -6,10 +6,12 @@
 1.  Клонируйте репозиторий:
     ```bash
     git clone https://github.com/GIT01-byte/Tg_weather_bot
-    cd <название_папки_бота>
+    cd "Tg_weather_bot"
     ```
 2.  Установите зависимости:
     ```bash
+    python -m venv .venv
+    .\.venv\Scripts\activate
     pip install -r requirements.txt
     ```
 ## Настройка
