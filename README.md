@@ -27,4 +27,4 @@
 ## Запуск
 
 ```bash
-python main.py
+python .\app\main.py
