@@ -14,8 +14,8 @@
     ```
 ## Настройка
 
-1.  Зарегистрируйте бота в Telegram, используя {Link: BotFather https://ibot.by/info/base/token/}, чтобы получить токен API.
-2.  Зарешистрийтесь на Open Weather Map, используя {Link: OWM https://openweathermap.org/}, чтобы получить токен API.
+1.  Зарегистрируйте бота в Telegram, используя BotFather https://ibot.by/info/base/token/, чтобы получить токен API.
+2.  Зарешистрийтесь на Open Weather Map, используя OWM https://openweathermap.org/, чтобы получить токен API.
 3.  Создайте файл `.env` в корневой папке проекта и добавьте в него:
     ```
     BOT_TOKEN=ВАШ_ТОКЕН_ИЗ_BOTFATHER
