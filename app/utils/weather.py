@@ -91,15 +91,15 @@ def get_weather(message):
             message_text += f'В <b>{city + 'е'}</b> сейчас <b>{status}</b>\n\n'
 
         if temp is not None:
-            message_text += f'🌡Температура - <b>{temp:.1f}°C</b> | '
+            message_text += f'🌡Температура: <b>{temp:.1f}°C</b> | '
             if temp_min is not None and temp_max is not None:
                 message_text += f'<i>мин. {temp_min:.1f}°C, макс. {temp_max:.1f}°C</i>\n'
 
         if wind_speed is not None:
-            message_text += f'💨Скорость ветра - <b>{wind_speed:.1f} м/с</b> | <i>{wind_speed_status}</i>\n'
+            message_text += f'💨Скорость ветра: <b>{wind_speed:.1f} м/с</b> | <i>{wind_speed_status}</i>\n'
 
         if pressure_mm is not None:
-            message_text += f'🏧Давление - <b>{pressure_mm:.1f} мм рт. ст.</b> | <i>{pressure_status}</i>\n'
+            message_text += f'🏧Давление: <b>{pressure_mm:.1f} мм рт. ст.</b> | <i>{pressure_status}</i>\n'
 
         if message_text == '':
             message_text = 'К сожалению, погодные данные для этого города недоступны.'

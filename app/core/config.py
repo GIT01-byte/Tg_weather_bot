@@ -1,5 +1,6 @@
 import logging
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 
@@ -14,7 +15,9 @@ load_dotenv()  # загрузит .env в окружение
 BOT_TOKEN = os.getenv("BOT_TOKEN")
 OWM_API_KEY = os.getenv("OWM_API_KEY")
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
-LOG_FILE_PATH = os.getenv("LOGS_FILE_PATH", "app/logs/bot.log")
+
+BASE_DIR = Path(__file__).parent.parent
+LOG_FILE_PATH = f'{BASE_DIR}/logs/bot.log'
 
 
 def get_owm_config():
