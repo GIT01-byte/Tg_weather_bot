@@ -1,5 +1,6 @@
 from datetime import datetime
 import logging
+import sys # для sys.exit()
 
 import telebot
 
@@ -7,15 +8,31 @@ from core import config
 from keyboards.keyboards import welcome_keyboard, change_city_keyboard
 from utils.weather import get_weather
 
+
+# --- Модульный Docstring ---
+"""
+Основной модуль Telegram-бота для получения прогноза погоды.
+
+Этот модуль инициализирует бота, настраивает логирование, определяет обработчики
+для различных команд и текстовых сообщений, а также управляет потоком диалога
+с пользователем для запроса и отображения информации о погоде.
+"""
+
+
+# Инициализируем логгер для текущего модуля.
+# '__name__' гарантирует, что имя логгера будет соответствовать имени модуля (например, 'main').
 logger = logging.getLogger(__name__)
 
+
+# --- Загрузка конфигурации ---
 # Используем значения конфигурации, импортированные из config.py
 BOT_TOKEN = config.BOT_TOKEN
 OWM_API_KEY = config.OWM_API_KEY
 LOG_LEVEL = config.LOG_LEVEL
 LOG_FILE_PATH = config.LOG_FILE_PATH
 
-# Настраиваем логирование
+
+# --- Настройка логирования ---
 try:
     log_level = getattr(logging, config.LOG_LEVEL)
 except AttributeError:
@@ -29,11 +46,14 @@ logging.basicConfig(
     filemode='a' # для добавления записей
 )
 
-# Создаем экземпляр Бота с токеном на Telebot, для работы с ним и Telegram
+
+# --- Инициализация Telegram бота ---
 bot = telebot.TeleBot(BOT_TOKEN)
 
-logging.info(f'Бот запущен: {datetime.now()}')
+logger.info(f'Бот успешно запущен в: {datetime.now()}')
 
+
+# --- Обработчики команд и сообщений ---
 @bot.message_handler(commands=['start'])
 def welcome(message):
     """Обработчик команды /start."""
@@ -89,7 +109,6 @@ def get_settings(message):
     bot.send_message(message.chat.id, 'Я пока что реализовываю эту функцию...')
     welcome_keyboard(message)
 
-
 @bot.message_handler(func=lambda message: message.text == 'Изменить город')
 def ask_for_city_handler(message):
     logger.info(f'Пользователь {message.from_user.id} ({message.from_user.username}) '
@@ -123,5 +142,11 @@ button_actions = {
     'Вернуться в главное меню': welcome_keyboard
 }
 
-# Запускаем Бота в вечном режиме
-bot.infinity_polling()
+
+# --- Запускаем Бота в вечном режиме ---
+if __name__ == '__main__':
+    try:
+        bot.infinity_polling()
+    except Exception as e:
+        logger.critical(f"Бот завершил работу из-за критической ошибки: {e}", exc_info=True)
+        sys.exit(1)
