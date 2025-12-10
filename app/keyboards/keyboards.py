@@ -29,7 +29,7 @@ logging.basicConfig(
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
-
+# Приветственная клавиатура, вызываеться первой
 @bot.message_handler(content_types=['text'])
 def welcome_keyboard(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=3, one_time_keyboard=True)
@@ -40,6 +40,7 @@ def welcome_keyboard(message):
     bot.send_message(message.chat.id, 'Нажми на кнопки снизу, чтобы узнать погоду.', reply_markup=markup)
 
 
+# Вызываеться после получения погоды либо когда произошли ошибки связанные с неккоректным вводом города
 @bot.message_handler(content_types=['text'])
 def change_city_keyboard(message):
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)

@@ -1,5 +1,6 @@
 from datetime import datetime
 import logging
+import sys # для sys.exit()
 
 import telebot
 
@@ -7,15 +8,31 @@ from core import config
 from keyboards.keyboards import welcome_keyboard, change_city_keyboard
 from utils.weather import get_weather
 
+
+# --- Модульный Docstring ---
+"""
+Основной модуль Telegram-бота для получения прогноза погоды.
+
+Этот модуль инициализирует бота, настраивает логирование, определяет обработчики
+для различных команд и текстовых сообщений, а также управляет потоком диалога
+с пользователем для запроса и отображения информации о погоде.
+"""
+
+
+# Инициализируем логгер для текущего модуля.
+# '__name__' гарантирует, что имя логгера будет соответствовать имени модуля (например, 'main').
 logger = logging.getLogger(__name__)
 
+
+# --- Загрузка конфигурации ---
 # Используем значения конфигурации, импортированные из config.py
 BOT_TOKEN = config.BOT_TOKEN
 OWM_API_KEY = config.OWM_API_KEY
 LOG_LEVEL = config.LOG_LEVEL
 LOG_FILE_PATH = config.LOG_FILE_PATH
 
-# Настраиваем логирование
+
+# --- Настройка логирования ---
 try:
     log_level = getattr(logging, config.LOG_LEVEL)
 except AttributeError:
@@ -26,13 +43,17 @@ logging.basicConfig(
     filename=LOG_FILE_PATH,
     level=log_level,
     format='%(asctime)s - %(levelname)s - %(name)s - %(message)s',
-    filemode='a'
+    filemode='a' # для добавления записей
 )
 
+
+# --- Инициализация Telegram бота ---
 bot = telebot.TeleBot(BOT_TOKEN)
 
-logging.info(f'Бот запущен: {datetime.now()}')
+logger.info(f'Бот успешно запущен в: {datetime.now()}')
 
+
+# --- Обработчики команд и сообщений ---
 @bot.message_handler(commands=['start'])
 def welcome(message):
     """Обработчик команды /start."""
@@ -44,27 +65,29 @@ def welcome(message):
             parse_mode='html'
             )
         logger.info(f"Пользователь {message.from_user.id} ({message.from_user.username}) запустил бота")
+        # Инициализируем приветственную клавиатуру и сам блок клавиатур вобщем
         welcome_keyboard(message)
     except Exception as e:
         logger.exception(f'Ошибка в функции welcome для пользователя {message.from_user.id}: {e}')
 
 
+# Обработчики Reply кнопок
 @bot.message_handler(func=lambda message: message.text == 'Узнать погоду')
 def ask_for_city(message):
     """Запрашивает у пользователя город."""
     logger.info(f'Пользователь {message.from_user.id} ({message.from_user.username}) '
                 f'воспользовался кнопкой {message.text}')
     bot.send_message(message.chat.id, 'Введите ваш город:')
+    # После отправки сообщения регистсрируем обработчик для получения погоды
     bot.register_next_step_handler(message, get_weather_handler)
 
-
+# Обработчик для вызова функция для получения погоды
 def get_weather_handler(message):
     """Получает погоду для введенного города и отправляет ее пользователю."""
     city = message.text
     try:
-        get_weather(message)
-        change_city_keyboard(message)
-
+        get_weather(message) # получаем сведения о погоде
+        change_city_keyboard(message) # переходим к клавиатуре для смены города
     except Exception as e:
         logger.exception(f'Ошибка при получении погоды в городе {city}: {e}')
         bot.reply_to(message, "Произошла ошибка при получении погоды. Попробуйте еще раз.")
@@ -78,7 +101,6 @@ def get_help(message):
     bot.send_message(message.chat.id, 'Я пока что реализовываю эту функцию...')
     welcome_keyboard(message)
 
-
 @bot.message_handler(func=lambda message: message.text == 'Настройки')
 def get_settings(message):
     """Обработчик для кнопки 'Настройки'."""
@@ -86,7 +108,6 @@ def get_settings(message):
                 f'воспользовался кнопкой {message.text}')
     bot.send_message(message.chat.id, 'Я пока что реализовываю эту функцию...')
     welcome_keyboard(message)
-
 
 @bot.message_handler(func=lambda message: message.text == 'Изменить город')
 def ask_for_city_handler(message):
@@ -101,6 +122,7 @@ def return_to_main_menu_handler(message):
     welcome_keyboard(message)
 
 
+# Обрабатываем прочие команды
 @bot.message_handler(content_types=['text'])
 def handle_text(message):
     """Обработчик для текстовых сообщений, не являющихся командами или кнопками."""
@@ -110,6 +132,8 @@ def handle_text(message):
         bot.send_message(message.chat.id, "Я не понимаю эту команду.  Нажмите на одну из кнопок.")
         welcome_keyboard(message)
 
+
+# Словарь для вызова функций по тексту сообщений
 button_actions = {
     'Изменить город': ask_for_city,
     'Узнать погоду': get_weather,
@@ -118,4 +142,11 @@ button_actions = {
     'Вернуться в главное меню': welcome_keyboard
 }
 
-bot.infinity_polling()
+
+# --- Запускаем Бота в вечном режиме ---
+if __name__ == '__main__':
+    try:
+        bot.infinity_polling()
+    except Exception as e:
+        logger.critical(f"Бот завершил работу из-за критической ошибки: {e}", exc_info=True)
+        sys.exit(1)
