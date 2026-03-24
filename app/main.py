@@ -7,7 +7,7 @@ import telebot
 from core import config
 from keyboards.keyboards import welcome_keyboard, change_city_keyboard
 from utils.weather import get_weather
-
+from core.config import settings
 
 # --- Модульный Docstring ---
 """
@@ -26,15 +26,15 @@ logger = logging.getLogger(__name__)
 
 # --- Загрузка конфигурации ---
 # Используем значения конфигурации, импортированные из config.py
-BOT_TOKEN = config.BOT_TOKEN
-OWM_API_KEY = config.OWM_API_KEY
-LOG_LEVEL = config.LOG_LEVEL
-LOG_FILE_PATH = config.LOG_FILE_PATH
+BOT_TOKEN = settings.BOT_TOKEN
+OWM_API_KEY = settings.OWM_API_KEY
+LOG_LEVEL = settings.LOG_LEVEL
+LOG_FILE_PATH = settings.LOG_FILE_PATH
 
 
 # --- Настройка логирования ---
 try:
-    log_level = getattr(logging, config.LOG_LEVEL)
+    log_level = getattr(logging, settings.LOG_LEVEL)
 except AttributeError:
     log_level = logging.INFO
     print(f'Неправильный уровень логирования LOG_LEVEL={LOG_LEVEL}. Используется INFO')

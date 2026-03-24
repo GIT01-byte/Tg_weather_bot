@@ -4,19 +4,19 @@ import time
 import telebot
 from pyowm.owm import OWM
 
-from core import config
+from core.config import settings
 
 logger = logging.getLogger(__name__)
 
 # Используем значения конфигурации, импортированные из config.py
-BOT_TOKEN = config.BOT_TOKEN
-OWM_API_KEY = config.OWM_API_KEY
-LOG_LEVEL = config.LOG_LEVEL
-LOG_FILE_PATH = config.LOG_FILE_PATH
+BOT_TOKEN = settings.BOT_TOKEN
+OWM_API_KEY = settings.OWM_API_KEY
+LOG_LEVEL = settings.LOG_LEVEL
+LOG_FILE_PATH = settings.LOG_FILE_PATH
 
 # Настраиваем логирование
 try:
-    log_level = getattr(logging, config.LOG_LEVEL)
+    log_level = getattr(logging, settings.LOG_LEVEL)
 except AttributeError:
     log_level = logging.INFO
     print(f'Неправильный уровень логирования LOG_LEVEL={LOG_LEVEL}. Используется INFO')
@@ -29,7 +29,7 @@ logging.basicConfig(
 )
 
 # Подставляем токены telebot и pyowm
-owm = OWM(OWM_API_KEY, config.get_owm_config())
+owm = OWM(OWM_API_KEY, settings.get_owm_config())
 bot = telebot.TeleBot(BOT_TOKEN)
 
 
@@ -39,7 +39,7 @@ def get_weather(message):
         city = message.text
         mgr = owm.weather_manager()
         observation = mgr.weather_at_place(city)
-        w = observation.weather
+        w = observation.weather # type: ignore
 
         # Получаем статус (описание погоды)
         status = w.detailed_status if hasattr(w, 'detailed_status') else None
