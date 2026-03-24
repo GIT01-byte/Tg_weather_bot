@@ -88,7 +88,7 @@ def get_weather(message):
         message_text = ''
 
         if status:
-            message_text += f'В <b>{city + 'е'}</b> сейчас <b>{status}</b>\n\n'
+            message_text += f'В <b>{city}е </b> сейчас <b>{status}</b>\n\n'
 
         if temp is not None:
             message_text += f'🌡Температура: <b>{temp:.1f}°C</b> | '

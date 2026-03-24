@@ -1,23 +1,26 @@
 import logging
-import os
 from pathlib import Path
 
-from dotenv import load_dotenv
-
+from pydantic_settings import BaseSettings
 from pyowm.utils.config import get_default_config
 
 
 logger = logging.getLogger(__name__)
 
-# Получаем значения конфигурации через переменные
-load_dotenv()  # загрузит .env в окружение
+BASE_DIR = Path(__file__).parent.parent
+LOG_FILE_PATH = f'{BASE_DIR}/logs/bot.log'
 
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-OWM_API_KEY = os.getenv("OWM_API_KEY")
-LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
 
-BASE_DIR = Path(__file__).parent.parent # определяем базовый путь проекта
-LOG_FILE_PATH = f'{BASE_DIR}/logs/bot.log' # расположение файла для логов
+class Settings(BaseSettings):
+    BOT_TOKEN: str
+    OWM_API_KEY: str
+    LOG_LEVEL: str = "INFO"
+
+    class Config:
+        env_file = BASE_DIR.parent / ".env"
+
+
+settings = Settings()
 
 
 def get_owm_config():
