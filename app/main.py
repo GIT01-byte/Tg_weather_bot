@@ -4,11 +4,10 @@ import sys # для sys.exit()
 
 import telebot
 
-from core import config
 from keyboards.keyboards import welcome_keyboard, change_city_keyboard
 from utils.weather import get_weather
 from core.config import settings
-
+from core.config import LOG_FILE_PATH
 # --- Модульный Docstring ---
 """
 Основной модуль Telegram-бота для получения прогноза погоды.
@@ -29,7 +28,6 @@ logger = logging.getLogger(__name__)
 BOT_TOKEN = settings.BOT_TOKEN
 OWM_API_KEY = settings.OWM_API_KEY
 LOG_LEVEL = settings.LOG_LEVEL
-LOG_FILE_PATH = settings.LOG_FILE_PATH
 
 
 # --- Настройка логирования ---

@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 BASE_DIR = Path(__file__).parent.parent
 LOG_FILE_PATH = f'{BASE_DIR}/logs/bot.log'
 
-
 class Settings(BaseSettings):
     BOT_TOKEN: str
     OWM_API_KEY: str

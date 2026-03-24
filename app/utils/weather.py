@@ -5,6 +5,7 @@ import telebot
 from pyowm.owm import OWM
 
 from core.config import settings
+from core.config import LOG_FILE_PATH, get_owm_config
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +13,6 @@ logger = logging.getLogger(__name__)
 BOT_TOKEN = settings.BOT_TOKEN
 OWM_API_KEY = settings.OWM_API_KEY
 LOG_LEVEL = settings.LOG_LEVEL
-LOG_FILE_PATH = settings.LOG_FILE_PATH
 
 # Настраиваем логирование
 try:
@@ -29,7 +29,7 @@ logging.basicConfig(
 )
 
 # Подставляем токены telebot и pyowm
-owm = OWM(OWM_API_KEY, settings.get_owm_config())
+owm = OWM(OWM_API_KEY, get_owm_config())
 bot = telebot.TeleBot(BOT_TOKEN)
 
 
